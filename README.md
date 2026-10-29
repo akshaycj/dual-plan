@@ -1,4 +1,4 @@
-<img src="./assets/hero.jpg" alt="dual-plan: Claude plans and reviews, Codex builds, tests and makes mockups, Haiku handles the browser" width="100%" />
+<img src="./assets/hero.jpg" alt="dual-plan: Opus plans on the Claude plan; builds, tests, research and mockups run on Codex lanes on the ChatGPT plan; 40% less Opus spend" width="100%" />
 
 # dual-plan
 

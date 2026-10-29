@@ -52,7 +52,7 @@ def main():
     cmd = ["codex", "exec", "-m", model, "-s", "workspace-write", "--skip-git-repo-check",
            "--ephemeral", "--disable", "multi_agent", "-o", last]
     for r in a.ref:
-        cmd += ["-i", os.path.abspath(r)]
+        cmd += [f"--image={os.path.abspath(r)}"]  # -i is variadic and would swallow the prompt
     t0 = time.time()
     with open(os.path.join(tmp, "stdout.txt"), "w") as out, open(os.path.join(tmp, "stderr.txt"), "w") as err:
         rc = subprocess.run(cmd + [PREAMBLE + prompt], stdin=subprocess.DEVNULL, stdout=out, stderr=err).returncode
