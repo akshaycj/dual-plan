@@ -2,7 +2,7 @@
 
 # dual-plan
 
-[![skills.sh](https://skills.sh/b/akshaycj/dual-plan)](https://skills.sh/akshaycj/dual-plan)
+[![skills.sh](https://img.shields.io/badge/skills.sh-npx%20skills%20add%20akshaycj%2Fdual--plan-111?labelColor=222)](https://skills.sh)
 
 **Use your Claude plan and your ChatGPT plan together, so neither one runs out first.**
 
