@@ -1,21 +1,21 @@
 # Why this split works
 
-Numbers from one heavy user's 3 weeks of Claude Code logs (166 main sessions, ~10.8k main
+Numbers from one heavy user's 3 weeks of Claude Code logs (171 main sessions, ~11.6k main
 model calls). Yours will differ; measure with `scripts/usage/`.
 
 ## Where the main model's money went
-- **Two thirds of main-session calls were pure chores**: a Read, grep, build, test or browser
+- **About 63% of main-session calls were pure chores**: a Read, grep, build, test or browser
   call whose only purpose was to fetch something. Each one re-reads the whole context at the
   main model's price, so a 100k-token context makes a 20-line grep cost like a paragraph of
   thinking.
-- Main-model cost split: cache reads ~49%, cache writes ~26%, output ~25%. Big tool results
+- Main-model cost split: cache reads ~47%, cache writes ~27%, output ~26%. Big tool results
   are paid twice: written to cache once, then re-read on every later call until compaction.
 - Calls with context past ~250k cost about 60% more per call than calls under it.
 - Cache rewrites (prefix changes, idle past the cache TTL) were ~8%.
 
 ## What moving chores out does
 - Replaying those sessions with chores pushed to a cheap worker in batches of ~5 (paying a
-  brief out and a ~400-token report back in) cut modelled main-session cost by **~42%**.
+  brief out and a ~400-token report back in) cut modelled main-session cost by **~40%**.
 - Sending that work to Codex instead of Haiku moves it to a different subscription entirely:
   ~95% of the Haiku subagent spend in the sample was work Codex could have done.
 - Switching the main loop to a cheaper model with an expensive advisor came out **+5%** (more

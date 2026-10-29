@@ -1,3 +1,5 @@
+<img src="./assets/hero.jpg" alt="dual-plan: Claude plans and reviews, Codex builds, tests and makes mockups, Haiku handles the browser" width="100%" />
+
 # dual-plan
 
 [![skills.sh](https://skills.sh/b/akshaycj/dual-plan)](https://skills.sh/akshaycj/dual-plan)
@@ -34,13 +36,58 @@ The skill works on its own, but the guard hooks are what keep the split honest. 
 
 Opus is the most expensive tool in your setup, and most of what it does all day is chores.
 
-In three weeks of one heavy user's logs (166 sessions, about 10.8k main-model calls), **two thirds of main-session calls were pure chores**: a read, a grep, a build, a test run, a browser check. Each of those calls re-reads the whole context at Opus prices, so a 20-line grep in a 100k-token session costs as much as a paragraph of thinking.
+In three weeks of one heavy user's logs (171 sessions, about 11.6k main-model calls), **63% of main-session calls were pure chores**: a read, a grep, a build, a test run, a browser check. Each of those calls re-reads the whole context at Opus prices, so a 20-line grep in a 100k-token session costs as much as a paragraph of thinking.
 
-Replaying those sessions with the chores pushed to workers cut the modelled main-session cost by **about 42%**. Sending that work to Codex instead of a Claude subagent moves it onto a different subscription entirely.
+Replaying those sessions with the chores pushed to workers cut the modelled main-session cost by **about 40%**. Sending that work to Codex instead of a Claude subagent moves it onto a different subscription entirely.
 
 Things that didn't help: switching the main loop to a cheaper model with Opus as an advisor came out **5% more expensive** (more turns, plus the advisor re-reading context). So Opus stays in charge and only its chores move.
 
-Full numbers are in [`references/why.md`](./skills/dual-plan/references/why.md), and you can measure your own with the scripts in `scripts/usage/`.
+## Real-world numbers
+
+Measured on one developer's Claude Code and Codex logs over 21 days, using the scripts in `scripts/usage/`. Costs are API list prices (Opus 5.5: $4/M input, $20/M output, $0.20/M cache read, $5/M cache write). On a subscription you don't pay these amounts, but they track how fast your plan's limit fills.
+
+### Same sessions, four setups
+
+The real sessions were replayed under each setup and priced:
+
+| Setup | Main-session cost | Change |
+|---|---:|---:|
+| Opus does everything (what actually happened) | $924.98 | — |
+| Sonnet main loop + Opus advisor | $968.02 | **+5%** |
+| **Opus main loop, chores pushed to workers (dual-plan)** | **$556.67** | **−40%** |
+| Both combined | $624.15 | −33% |
+
+### Work moved off the Claude plan
+
+| Over 21 days | |
+|---|---:|
+| Codex worker runs | 287 |
+| Codex tokens: fresh input / cached input / output | 33.1M / 1,234M / 4.5M |
+| The same tokens priced at Opus list rates | **≈ $470** |
+| Cost of writing briefs and carrying reports for those runs in the Opus context | $5 |
+
+All of that Codex work counted against the ChatGPT plan instead of Claude. Handing it off cost the main session about 1% of what doing it there would have.
+
+### Why long sessions burn your limit
+
+Every call re-reads the context, so cost per call rises with context size:
+
+| Context size | Opus cost per call |
+|---|---:|
+| under 50k tokens | $0.028 |
+| 50k–100k | $0.087 |
+| 100k–250k | $0.063–$0.074 |
+| over 250k | **$0.100** |
+
+Main-session spend split: **47% cache reads**, 27% cache writes, 26% output. Re-reading context, not writing answers, is most of the bill. Keeping chores and their output out of the main context is the lever.
+
+### The trend once it's in place
+
+Over the last 7 days, with dual-plan in use for part of that time, chores fell from 63% to **49%** of main-session calls.
+
+<sub>One user, one setup: your numbers will differ. Codex tokens priced at Opus rates is an equivalence, not a saving you'd see on a bill, because Opus might have used fewer or more tokens for the same work. The 7-day window is too short to call a final result. Run the scripts below on your own logs.</sub>
+
+More detail is in [`references/why.md`](./skills/dual-plan/references/why.md).
 
 ## How it works
 
