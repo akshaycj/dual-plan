@@ -1,5 +1,7 @@
 # dual-plan
 
+[![skills.sh](https://skills.sh/b/akshaycj/dual-plan)](https://skills.sh/akshaycj/dual-plan)
+
 **Use your Claude plan and your ChatGPT plan together, so neither one runs out first.**
 
 A Claude Code skill that turns Opus into the planner and reviewer, and sends the heavy lifting to Codex CLI workers that bill to your ChatGPT subscription. A cheap Haiku subagent handles the few things Codex can't do: the browser, screenshots, computer use and MCP connectors.
